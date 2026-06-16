@@ -34,7 +34,7 @@ app.post('/webhook', async (req, res) => {
 
     const data = await response.json();
     console.log('Stack AI raw response:', JSON.stringify(data));
-    replyText = data['out-0'] ?? 'No response from Stack AI.';
+    replyText = data?.outputs?.['out-0'] ?? 'No response from Stack AI.';
 
   } catch (err) {
     console.error('Error:', err);
