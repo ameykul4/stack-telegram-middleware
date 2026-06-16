@@ -29,13 +29,18 @@ app.post('/webhook', async (req, res) => {
         user_id: userId,
         'in-0': userMessage,
       }),
+      signal: AbortSignal.timeout(60000),
     });
 
     const data = await response.json();
+    console.log('Stack AI raw response:', JSON.stringify(data));
     replyText = data['out-0'] ?? 'No response from Stack AI.';
 
   } catch (err) {
     console.error('Error:', err);
+    if (err.name === 'TimeoutError' || err.name === 'AbortError') {
+      replyText = 'The AI is taking too long to respond. Please try again in a moment.';
+    }
   }
 
   await fetch(`${TELEGRAM_API}/sendMessage`, {
